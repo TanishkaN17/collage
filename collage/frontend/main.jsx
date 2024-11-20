@@ -17,8 +17,11 @@ const root = createRoot(document.getElementById("reactEntry"));
 root.render(
   <MantineProvider theme={{
     fontFamily: 'DM Sans'}}>
-      <GoogleOAuthProvider clientId="717882630767-4ai5cm1ilncubomf61nr01r82m0gscps.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="302505148937-nff5el9dgjdjdbim7u3i1nv8h4gn8gqv.apps.googleusercontent.com">
         <Registration/>
       </GoogleOAuthProvider>
   </MantineProvider>
 );
+
+// testing: clientID should be set to 302505148937-crgfo4fb3b9r8aboosgdn50tg1ordufc.apps.googleusercontent.com
+// deployment: clientID should be set to 302505148937-nff5el9dgjdjdbim7u3i1nv8h4gn8gqv.apps.googleusercontent.com

@@ -1,10 +1,11 @@
-.wrapper{
+.network-wrapper{
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 5%;
+    margin-top: 5%;
 }
 
 .activity-glimpse{
-    margin-top: 10%;
+    margin-top: 128px;
 }

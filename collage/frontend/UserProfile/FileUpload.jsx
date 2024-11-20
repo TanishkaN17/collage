@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Group, Text, rem } from '@mantine/core';
+import { Group, Text, rem, Button } from '@mantine/core';
 import { IconUpload, IconX} from '@tabler/icons-react';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import '../CSS/FileUpload.css';
@@ -19,35 +19,49 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
+const FileUpload = ({ userName }) => {
   const [resumeFileName, setResumeFileName] = useState('');
   const [transcriptFileName, setTranscriptFileName] = useState('');
+  const [scheduleFileName, setScheduleFileName] = useState('');
   const [resumeText, setResumeText] = useState('Click to select a file or drag here');
   const [transcriptText, setTranscriptText] = useState('Click to select a file or drag here');
-  
+  const [scheduleText, setScheduleText] = useState('Click to select a file or drag here');
+  const [resumeFile, setResumeFile] = useState();
+  const [transcriptFile, setTranscriptFile] = useState();
   useEffect(() => {
     const fetchFiles = async() => {
       try{
-        const resumeRef = ref(storage, `resumes/${userName}/resume.pdf`);
+        const resumeRef = ref(storage, `${userName}/resume.pdf`);
         const resumeMetadata = await getMetadata(resumeRef);
   
         if(resumeMetadata){
           setResumeFileName(resumeMetadata.name);
-          setResumeText('Upload ne resume');
+          setResumeText('Upload new resume');
         }
       } catch (error) {
-        console.log('No existing resume found for user.');
+        
       }
   
       try {
-        const transcriptRef = ref(storage, `transcripts/${userName}/transcript.pdf`);
+        const transcriptRef = ref(storage, `${userName}/transcript.pdf`);
         const transcriptMetadata = await getMetadata(transcriptRef);
         if(transcriptMetadata){
           setTranscriptFileName(transcriptMetadata.name);
           setTranscriptText('Upload new transcript');
         }
       } catch (error) {
-        console.log('No existing transcript found for user.');
+        
+      }
+
+      try {
+        const scheduleRef = ref(storage, `${userName}/schedule.pdf`);
+        const scheduleMetadata = await getMetadata(scheduleRef);
+        if(scheduleMetadata){
+          setTranscriptFileName(scheduleMetadata.name);
+          setTranscriptText('Upload new schedule');
+        }
+      } catch (error) {
+        
       }
     };
 
@@ -60,7 +74,7 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
       setResumeText('Upload new resume');
       setResumeFileName(files[0].name);
 
-      const storageRef = ref(storage, `resumes/${userName}/${files[0].name}`);
+      const storageRef = ref(storage, `${userName}/resume.pdf`);
       const uploadTask = uploadBytesResumable(storageRef, files[0]);
 
       uploadTask.on("state_changed", 
@@ -71,7 +85,10 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
           console.error('Resume upload failed:', error);
         },
         () => {
-          console.log('Resume uploaded successfully');
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            console.log(url)
+            })
+          
         }
       );
     }
@@ -84,7 +101,7 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
       setTranscriptFileName(files[0].name);
 
       // Upload the file to Firebase Storage
-      const storageRef = ref(storage, `transcripts/${userName}/${files[0].name}`);
+      const storageRef = ref(storage, `${userName}/transcript.pdf`);
       const uploadTask = uploadBytesResumable(storageRef, files[0]);
 
       uploadTask.on("state_changed",
@@ -96,7 +113,35 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
         },
         () => {
           // Upload completed successfully
-          console.log('Transcript uploaded successfully');
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            // console.log(url)
+            })
+          
+        }
+      );
+    }
+  };
+
+  const handleScheduleUpload = (files) => {
+    if (files && files[0]) {
+      setScheduleFile(files[0]);
+      setScheduleText('Upload new transcript');
+      setScheduleFileName(files[0].name);
+
+      // Upload the file to Firebase Storage
+      const storageRef = ref(storage, `${userName}/schedule.ics`);
+      const uploadTask = uploadBytesResumable(storageRef, files[0]);
+
+      uploadTask.on("state_changed",
+        (snapshot) => {
+          // You can track progress here if needed
+        },
+        (error) => {
+          console.error('Schedule upload failed:', error);
+        },
+        () => {
+          // Upload completed successfully
+          
         }
       );
     }
@@ -107,9 +152,9 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
       <Text size="xl" className="resume-text">{resumeFileName || 'Upload your resume:'}</Text>
       <Dropzone
         multiple={false}
-        style={{ height: "40%", color: '#5d5d5d' }}
+        style={{ height: "100%", color: '#5d5d5d' }}
         onDrop={handleResumeUpload}
-        onReject={(files) => console.log('rejected files', files)}
+        // onReject={(files) => console.log('rejected files', files)}
         maxSize={5 * 1024 ** 2}
         accept={PDF_MIME_TYPE}
         className="resume-drop"
@@ -117,19 +162,19 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
         <Group position="center" spacing="xl" mih={60} style={{ pointerEvents: 'none' }}>
           <Dropzone.Accept>
             <IconUpload
-              style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }}
+              style={{ width: "100%", height: "100%", color: 'var(--mantine-color-blue-6)' }}
               stroke={1.5}
             />
           </Dropzone.Accept>
           <Dropzone.Reject>
             <IconX
-              style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-red-6)' }}
+              style={{ width: "100%", height: "100%", color: 'var(--mantine-color-red-6)' }}
               stroke={1.5}
             />
           </Dropzone.Reject>
           <Dropzone.Idle>
             <IconUpload
-              style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-dimmed)' }}
+              style={{ width: rem(30), height: rem(30), color: 'var(--mantine-color-dimmed)' }}
               stroke={1.5}
             />
           </Dropzone.Idle>
@@ -142,9 +187,9 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
       <Text size="xl" className="transcript-text">{transcriptFileName || 'Upload your transcript:'}</Text>
       <Dropzone
         multiple={false}
-        style={{ height: "40%", color: '#5d5d5d' }}
+        style={{ height: "100%", color: '#5d5d5d' }}
         onDrop={handleTranscriptUpload}
-        onReject={(files) => console.log('rejected files', files)}
+        // onReject={(files) => console.log('rejected files', files)}
         maxSize={5 * 1024 ** 2}
         accept={PDF_MIME_TYPE}
         className="transcript-drop"
@@ -152,19 +197,19 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
         <Group position="center" spacing="xl" mih={60} style={{ pointerEvents: 'none' }}>
           <Dropzone.Accept>
             <IconUpload
-              style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }}
+              style={{ width: "100%", height: "100%", color: 'var(--mantine-color-blue-6)' }}
               stroke={1.5}
             />
           </Dropzone.Accept>
           <Dropzone.Reject>
             <IconX
-              style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-red-6)' }}
+              style={{ width: "100%", height: "100%", color: 'var(--mantine-color-red-6)' }}
               stroke={1.5}
             />
           </Dropzone.Reject>
           <Dropzone.Idle>
             <IconUpload
-              style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-dimmed)' }}
+              style={{ width: rem(30), height: rem(30), color: 'var(--mantine-color-dimmed)' }}
               stroke={1.5}
             />
           </Dropzone.Idle>
@@ -173,6 +218,42 @@ const FileUpload = ({ userName, setResumeFile, setTranscriptFile }) => {
           </Text>
         </Group>
       </Dropzone>
+      {/* <div className="confirm-update"><Button>Update</Button></div> */}
+      
+      {/* <Text size="xl" className="schedule-text">{scheduleFileName || 'Upload your schedule:'}</Text>
+      <Dropzone
+        multiple={false}
+        style={{ height: "100%", color: '#5d5d5d' }}
+        onDrop={handleScheduleUpload}
+        onReject={(files) => console.log('rejected files', files)}
+        maxSize={5 * 1024 ** 2}
+        accept={PDF_MIME_TYPE}
+        className="schedule-drop"
+      >
+        <Group position="center" spacing="xl" mih={60} style={{ pointerEvents: 'none' }}>
+          <Dropzone.Accept>
+            <IconUpload
+              style={{ width: "100%", height: "100%", color: 'var(--mantine-color-blue-6)' }}
+              stroke={1.5}
+            />
+          </Dropzone.Accept>
+          <Dropzone.Reject>
+            <IconX
+              style={{ width: "100%", height: "100%", color: 'var(--mantine-color-red-6)' }}
+              stroke={1.5}
+            />
+          </Dropzone.Reject>
+          <Dropzone.Idle>
+            <IconUpload
+              style={{ width: rem(30), height: rem(30), color: 'var(--mantine-color-dimmed)' }}
+              stroke={1.5}
+            />
+          </Dropzone.Idle>
+          <Text size="md">
+            {scheduleText}
+          </Text>
+        </Group>
+      </Dropzone> */}
     </div>
   );
 };

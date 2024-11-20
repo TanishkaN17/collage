@@ -11,8 +11,9 @@
 }
 
 /* Navbar container */
-.navbar {
+.network-navbar {
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
     margin-bottom: 20px;
     border: 0.52px solid #c3c3c3;

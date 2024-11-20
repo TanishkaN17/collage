@@ -1,4 +1,4 @@
-import React, {useState, lazy} from 'react';
+import React, {useState, lazy, useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Image, Title, ActionIcon, Dialog, Text } from '@mantine/core';
 import { IconCircleChevronRight, IconCircleChevronLeft } from '@tabler/icons-react';
@@ -7,7 +7,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 import { ref, getStorage, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import Cookies from 'js-cookie';
-import fullLogo from '../images/full-logo.png';
+import fullLogo from '../images/dark-logo.svg';
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
     apiKey: 'AIzaSyDc5B7m__Z77iTyQYmb9cXxrn7Bo3a9C18',
@@ -32,20 +32,34 @@ const Signup = ({setLoggedIn, setRegistered}) => {
   const [currPage, setCurrPage] = useState(0);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [major, setMajor] = useState('');
   const [startYear, setStartYear] = useState(2020);
   const [gradYear, setGradYear] = useState(2025);
   const [interests, setInterests] = useState([]);
   const [resumeFile, setResumeFile] = useState();
   const [transcriptFile, setTranscriptFile] = useState();
+  const [currUser, setCurrUser] = useState();
   const [errorDialog, setErrorDialog] = useState(false);
   const [validEntries, setValidEntries] = useState(false); //should be set to true when the states of the current page are valid
   const titleTexts = ['Hey there!', 'Get excited!', 'Select your interests', 'Last step! (optional)'];
   const buttonTexts = ['Next step', 'Keep going', 'Complete', 'Start Collage'];
   const navigate = useNavigate();
+
+  const fetchCurrUser = async () => {
+    const result = await fetch("/api/current-user-id/", {
+        method: "GET",
+        credentials: "include",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Cookies.get('access_token')}`,
+        },
+      },)
+      .then((response) => response.json())
+      .then((data) => { setCurrUser(data.current_user);});
+    }   
+    useEffect(() => {fetchCurrUser()}, []);
+
   const handleNext = (e) => {
     e.preventDefault();
     if (validEntries){
@@ -61,39 +75,39 @@ const Signup = ({setLoggedIn, setRegistered}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (resumeFile){
-        const storageRef = ref(storage, resumeFile.path);
+        const storageRef = ref(storage, `${currUser}/resume.pdf`);
         const uploadTask = uploadBytesResumable(storageRef, resumeFile);
-        console.log('uploading files');
+        
         uploadTask.on("state_changed", (snapshot) => {
             const prog = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
             // Don't fetch downloadURL here, just track progress
         },
-        (err) => console.log(err),
+        // (err) => console.log(err),
         () => {
             // Get download URL here
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            console.log(url)
+            // console.log(url)
             })
         }
         );
     }
     if (transcriptFile){
-        const storageRef1 = ref(storage, transcriptFile.path);
+        const storageRef1 = ref(storage, `${currUser}/transcript.pdf`);
         const uploadTask1 = uploadBytesResumable(storageRef1, transcriptFile);
-        console.log('uploading files');
+        
         uploadTask1.on("state_changed", (snapshot) => {
             const prog = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
             // Don't fetch downloadURL here, just track progress
         },
-        (err) => console.log(err),
+        // (err) => console.log(err),
         () => {
             // Get download URL here
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            console.log(url)
+            getDownloadURL(uploadTask1.snapshot.ref).then((url) => {
+            // console.log(url)
             })
         }
         );
@@ -109,16 +123,16 @@ const Signup = ({setLoggedIn, setRegistered}) => {
         body: JSON.stringify({full_name: firstName + " " + lastName,
                               start_year: startYear,
                               graduation_year: gradYear,
-                              enrollment_date: '2020-11-11',
-                              credits_completed: 60,
+                              // enrollment_date: '2020-01-01',
+                              credits_completed: 0,
                               temporary_keywords: 'science',
                               major: major
         }),
       },)
-      .then((response) => {setRegistered(true); setLoggedIn(true); navigate("/home");});
+      .then((response) => {setRegistered(true); setLoggedIn(true); navigate("/collage/home");});
   }
 
-  return <div className="wrapper">
+  return <div className="signup-wrapper">
     <Dialog
         opened={errorDialog}
         withCloseButton
@@ -132,7 +146,7 @@ const Signup = ({setLoggedIn, setRegistered}) => {
         </Text>
       </Dialog>
     <div className="collageTitle">
-        <Image w="30vw"src={ fullLogo }/>
+        <Image width="20vw"src={ fullLogo }/>
     </div>
     <div className="wrapperBox">
         <div className="wrapperNav">

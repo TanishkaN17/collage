@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import buttonImage from "../images/follow-button-icon.svg";
+import Cookies from 'js-cookie';
 import '../CSS/SuggestedConnectionUserProfile.css'; 
 
 function SuggestedConnectionUserProfile ({ profileImage, name, major, userId }) {
@@ -8,7 +9,16 @@ function SuggestedConnectionUserProfile ({ profileImage, name, major, userId }) 
 
   const handleFollowClick = async () => {
     try {
-      const response = await axios.post('/api/follow', { userId });
+      const payload = {
+          user_id: userId,
+          follow_id: userId
+      };
+      const response = await axios.post('/api/follow', payload , {
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Cookies.get('access_token')}`,
+        },
+    });
       if (response.status === 200) {
         setFollowRequested(true); // Update button state to "Requested"
       }
@@ -27,7 +37,7 @@ function SuggestedConnectionUserProfile ({ profileImage, name, major, userId }) 
         <p> <strong> Major: </strong> </p>
         <p>{major}</p>
         
-        <button onClick={handleFollowClick} className="follow-button" disabled={followRequested}>
+        <button onClick={()=>handleFollowClick()} className="follow-button" disabled={followRequested}>
           <img src={buttonImage} className="button-icon" />
           {followRequested ? 'Requested' : 'Follow'}
         </button>

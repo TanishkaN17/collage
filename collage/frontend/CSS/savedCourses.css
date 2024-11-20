@@ -1,6 +1,7 @@
 .courses {
     list-style: none;
-    width: 95%;
+    width: 100%;
+    padding: 0;
 }
 
 .course {
@@ -8,7 +9,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    height: 120px;
+    height: 80px;
     border: 1px #A7a7a7 solid;
     border-radius: 15px;
     padding: 10px 20px;
@@ -17,26 +18,21 @@
 }
 
 .logo {
-    margin-left: -15px;
-    min-height: 110px;
-    min-width: auto;
+    height: 80px;
+    min-height: 80px;
+    padding: 10px;
 }
 
-.text {
-    width: 70%;
-}
-
-.title {
-    font-weight: 600;
-    font-size: 20px;
-    margin-bottom: 0;
+.saved-text {
+    width: 90%;
+    margin-top: 10px;
 }
 
 .description {
     margin-top: 0;
 }
 
-.rating {
+.saved-rating {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,3 +44,9 @@
     align-items: center;
     justify-content: center;
 }
+
+.saved-course-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }

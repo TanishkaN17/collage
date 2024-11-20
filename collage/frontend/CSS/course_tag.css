@@ -3,10 +3,14 @@
     height: 250px;
     border-radius: 12px;
     border: 1px solid #000000;
-    overflow: hidden;
+    overflow: auto;
     cursor: pointer;
-
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
+.course-tag::-webkit-scrollbar { display: none; }
+.course-tag::-webkit-scrollbar-button { display: none; }
 
 .course-tag:hover {
 
@@ -22,7 +26,6 @@
     padding: 10px;
     background-color: lightblue;
     font-family: "Proxima Nova", Arial, Helvetica, sans-serif;
-    border: 1px solid #000000;
 }
 
 .course-info {
@@ -55,7 +58,7 @@
     font-family: "Proxima Nova", Arial, Helvetica, sans-serif;
 }
 
-.credits {
+.tag-credits {
     margin-left: auto;
     padding: 5px 10px;
     color: black;
@@ -66,7 +69,7 @@
     font-weight: bold;
 }
 
-.body {
+.course-body {
     padding: 10px;
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
@@ -111,6 +114,22 @@
     flex-direction: column;
     align-items: center;
     margin: 10px 0;
+}
+
+.rating-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0 0 0;
+}
+
+.rating-saved{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
 }
 
 .star {

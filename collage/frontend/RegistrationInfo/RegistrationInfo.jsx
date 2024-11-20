@@ -51,7 +51,12 @@ const RegistrationInfo = () => {
   const [registrationData, setRegistrationData] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/registration-info', { params: { user_id: 1 } })
+    axios.get('/api/registration-info', { params: { user_id: 1 } }, {
+      headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${Cookies.get('access_token')}`,
+      },
+  })
       .then((response) => setRegistrationData(response.data))
       .catch((error) => console.error('Error fetching registration info:', error));
   }, []);

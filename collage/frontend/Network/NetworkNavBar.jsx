@@ -5,7 +5,7 @@ const Following = lazy(() => import('./Following'));
 const Requests = lazy(() => import('./Requests'));
 const Connect = lazy(() => import('./Connect'));
 
-const NetworkNavBar = (followerData) => {
+const NetworkNavBar = ({profileUser, handleViewProfile}) => {
   // State to track the active tab
   const [activeTab, setActiveTab] = useState('Connect');
 
@@ -18,14 +18,13 @@ const NetworkNavBar = (followerData) => {
   const renderContent = () => {
     switch (activeTab) {
       case 'Connect':
-        return <Connect/>;
-        //can add the components here once they are completed
+        return <Connect currentUser={profileUser}/>;
       case 'Requests':
-        return <Requests/>;
+        return <Requests currentUser={profileUser} handleViewProfile={handleViewProfile}/>;
       case 'Followers':
-        return <Followers/>;
+        return <Followers currentUser={profileUser} handleViewProfile={handleViewProfile}/>;
       case 'Following':
-        return <Following/>;
+        return <Following currentUser={profileUser} handleViewProfile={handleViewProfile}/>;
       default:
         return null;
     }
@@ -33,7 +32,7 @@ const NetworkNavBar = (followerData) => {
 
   return (
     <div className="network-navbar-wrapper">
-      <nav className="navbar">
+      <nav className="network-navbar">
         <button
           className={`nav-button ${activeTab === 'Connect' ? 'red-highlight' : ''}`}
           onClick={() => handleTabChange('Connect')}

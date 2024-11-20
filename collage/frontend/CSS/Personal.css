@@ -1,5 +1,12 @@
 .personal-container{
-  margin-bottom: 10%;
+  margin-bottom: 2%;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  padding-bottom: 20px;
+}
+
+.personal-header{
+  font-family: "Proxima Nova", Arial, Helvetica, sans-serif;
 }
 
 .header-image-container{
@@ -17,8 +24,8 @@
 
 .pencil-button{
   position: absolute;
-  bottom: 80%;
-  left: 95%;
+  bottom: 75%;
+  left: 94%;
   width: 50px;
   height: auto;
   border: none;
@@ -132,10 +139,10 @@
 
 .profile-picture{
   position: absolute;
-  bottom: -80px;
-  left: 20%;
-  width: 200px;
-  height: 200px;
+  bottom: -60px;
+  left: 10%;
+  width: 10vw;
+  height: 10vw;
   border-radius: 50%;
   border: 8px solid white;
   object-fit: cover;
@@ -143,12 +150,12 @@
 
 .camera-button{
   position: absolute;
-  bottom: -60px;
-  left: 20%;
+  bottom: -39px;
+  left: 19%;
   padding: 0;
-  margin-left: 150px;
-  width: 35px;
-  height: 35px;
+  margin-left: 45px;
+  width: 2vw;
+  height: 2vw;
   background-color: white;
   border: none;
   border-radius: 50px;
@@ -171,8 +178,8 @@
   gap: 0;
   width: 100%;
   margin-top: 100px;
-  padding-left: 22%;
-  padding-right: 22%;
+  padding-left: 10%;
+  padding-right: 10%;
   align-items: top;
 }
 
@@ -215,6 +222,14 @@
   grid-row: 2;
   justify-self: end;
   margin: 0;
+}
+
+.header-content .logout{
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: end;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .icons{
@@ -293,8 +308,7 @@
 .header-content .followers{
   grid-column: 1;
   grid-row: 3;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .followers{
@@ -307,13 +321,14 @@
   margin: 0;
 }
 
-.info{
+.personal-info{
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(4, auto);
   gap: 2px;
-  padding-left: 22%;
-  padding-right: 22%;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 15px;
 }
 
 .label{
@@ -328,4 +343,10 @@
   grid-column: 2;
   align-self: center;
   margin: 10px 0px 10px 0px;
+}
+
+.saved-title {
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0;
 }

@@ -4,7 +4,7 @@ import { Image, Title, Dialog, Text, TextInput, Button} from '@mantine/core';
 import { useGoogleLogin } from "@react-oauth/google";
 import '../CSS/Signup.css';
 import googleLogo from '../images/google-logo.png';
-import fullLogo from '../images/full-logo.png';
+import fullLogo from '../images/dark-logo.svg';
 
 async function getUserInfo(codeResponse) {
   var response = await fetch("/api/login/", {
@@ -19,7 +19,6 @@ async function getUserInfo(codeResponse) {
 
 const Login = ({loggedIn, setLoggedIn, registered, setRegistered}) => {
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState();
   const [invalidLogin, setInvalidLogin] = useState(false);
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
@@ -31,22 +30,23 @@ const Login = ({loggedIn, setLoggedIn, registered, setRegistered}) => {
       }
       else{
         setLoggedIn(true);
-        console.log(loginDetails.registered);
+        // console.log(loginDetails.registered);
 
         if (loginDetails.registered === true){
           setRegistered(true);
-          navigate("/home");
+          navigate("/collage/home");
         }
         else{
           setRegistered(false);
-          navigate("/signup");
+          navigate("/collage/signup");
         }
       }
     },
     onError: async (codeResponse) => {
-      console.log("failed");
+      // console.log("failed");
     }
-  })
+  });
+
   return (
     <div className="wrapper-login">
       <Dialog
@@ -62,7 +62,7 @@ const Login = ({loggedIn, setLoggedIn, registered, setRegistered}) => {
         </Text>
       </Dialog>
       <div className="collageTitle">
-        <Image src={ fullLogo } w="30vw"/>
+        <Image src={ fullLogo } width="20vw"/>
       </div>
       <div className="wrapperBoxLogin">
         <div className="wrapperNav"></div>
@@ -71,16 +71,16 @@ const Login = ({loggedIn, setLoggedIn, registered, setRegistered}) => {
         </div>
         <div className="wrapperContentLogin">
           <TextInput
-          placeholder="Full Name"
-          size="lg"
-          styles={{
-            label: { fontSize: 24, textAlign: 'left', alignContent: 'left' },
-            input: { fontSize: 20 },
-          }}
+            placeholder="Full Name (optional)"
+            size="lg"
+            styles={{
+              label: { fontSize: 24, textAlign: 'left', alignContent: 'left' },
+              input: { fontSize: 20 },
+            }}
           />
           <br />
           <TextInput
-            placeholder="University Name"
+            placeholder="University Name (optional)"
             size="lg"
             styles={{
               label: { fontSize: 24, textAlign: 'left', alignContent: 'left' },

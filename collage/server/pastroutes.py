@@ -1,3 +1,191 @@
+# @collage.app.route('/api/loadfilters/', methods=['GET'])
+# def loadfilters():
+#     connection = collage.model.get_db()  # open db
+#     with connection.cursor(dictionary=True) as cursor:
+#         #         # cursor.execute("""CREATE TABLE filters (
+#         #         #     filter_id INT AUTO_INCREMENT PRIMARY KEY,
+#         #         #     filter_cat VARCHAR(255) NOT NULL,
+#         #         #     filter_value VARCHAR(255) UNIQUE NOT NULL,
+#         #         #     filter_name VARCHAR(255) UNIQUE NOT NULL
+#         #         # )""")
+#         #         # cursor.commit()
+#         filters = ['1 credit', '2 credits', '3 credits',
+#                    '4 credits', '5 credits', '6 credits']
+#         for filter in filters:
+#             insert_query = """INSERT INTO filters (filter_cat, filter_value, filter_name) VALUES (%s, %s, %s)"""
+#             cursor.execute(insert_query, ('Credits', filter, f'c{filter}',))
+#     connection.commit()
+#     return flask.jsonify(status='Success'), 200
+
+# @collage.app.route('/api/courses/<int:course_id>', methods=['POST'])
+# def course_backpack(course_id):
+#     op = flask.request.args.get('operation')
+#     user_id = flask.request.args.get('user_id')
+#     connection = collage.model.get_db()
+#     cursor = connection.cursor()
+
+#     if op == 'save':
+#         try:
+#             cursor.execute('''
+#                 INSERT INTO saved_courses (user_id, course_id)
+#                 VALUES (%s, %s)
+#             ''', (user_id, course_id))
+#             connection.commit()
+#             return flask.jsonify({'status': 'success', 'message': 'Course saved successfully'}), 200
+#         except Exception as e:
+#             connection.rollback()
+#             return flask.jsonify({'status': 'error', 'message': str(e)}), 500
+
+#     elif op == 'delete':
+#         try:
+#             cursor.execute('''
+#                 DELETE FROM saved_courses
+#                 WHERE user_id = %s AND course_id = %s
+#             ''', (user_id, course_id))
+#             connection.commit()
+#             return flask.jsonify({'status': 'success', 'message': 'Course removed successfully'}), 200
+#         except Exception as e:
+#             connection.rollback()
+#             return flask.jsonify({'status': 'error', 'message': str(e)}), 500
+
+#     else:
+#         return flask.jsonify({'status': 'error', 'message': 'Invalid operation'}), 400
+
+# This route is for the profile bar
+
+# @collage.app.route('/api/test/', methods=['GET'])
+# def test():
+#     # Load CSV files
+#     course_tags_df = pd.read_csv("./collage/server/lsa_course_tags.csv")
+#     course_info_df = pd.read_csv("./collage/server/WN2025.csv")
+
+#     # Filter to keep only unique combinations of Subject and Catalog Nbr
+#     course_info_df = course_info_df.drop_duplicates(subset=['Subject', 'Catalog Nbr'])
+
+#     conn = collage.model.get_db()
+#     cursor = conn.cursor()
+
+#     print("Cursor created")
+
+#     num_row = 0
+#     num_actual_row = 0
+
+#     # Step 1: Populate `courses` table
+#     for _, row in course_info_df.iterrows():
+#         num_row += 1
+#         if num_row % 100 == 0:
+#             print(f"Processed {num_row} rows")
+
+#         # Extract only the subject code within parentheses using regex
+#         subject_match = re.search(r'\((.*?)\)', row['Subject'])
+#         if subject_match:
+#             subject = subject_match.group(1)  # Get text inside parentheses
+#         else:
+#             subject = row['Subject'].strip()  # Fallback if format is unexpected
+
+#         catalog_nbr = row['Catalog Nbr'].strip()
+#         course_code = f"{subject} {catalog_nbr}"
+#         course_name = row['Course Title']
+#         instructor = row['Instructor']
+
+#         # Extract credit hours, handling cases with ranges
+#         units_value = row['Units']
+#         if pd.notna(units_value):
+#             credit_hours = int(float(units_value.split('-')[0].strip()))
+#         else:
+#             credit_hours = 0  # Default to 0 if Units is NaN
+
+#         # Default values for additional fields
+#         location = row.get('Location', '')  # Use empty string if Location is not available
+#         open_status = row.get('Open Status', '')
+
+#         # Retrieve tags from the course_tags_df DataFrame
+#         course_tags_row = course_tags_df[course_tags_df['Course Number'] == course_code]
+#         if not course_tags_row.empty:
+#             tags = course_tags_row.iloc[0, 3:8].fillna('')  # Fill NaNs with empty strings
+#             tag_1, tag_2, tag_3, tag_4, tag_5 = tags.tolist()
+#             if num_row % 50 == 0:
+#                 print(f"{course_code} found in tags CSV: {tag_1}, {tag_2}, {tag_3}, {tag_4}, {tag_5}")
+#         else:
+#             if num_row % 50 == 0:
+#                 print(f"Not found in tags CSV: {course_code}")
+#             continue
+
+#         # Insert course data into the courses table
+#         cursor.execute(
+#             """
+#             INSERT INTO courses (
+#                 course_code, credit_hours, instructor_id, topic_description,
+#                 course_description, class_topic, icon_url, total_rating, num_ratings,
+#                 open_status, tag_1, tag_2, tag_3, tag_4, tag_5
+#             )
+#             VALUES (%s, %s, NULL, '', '', %s, '', 0.0, 0, %s, %s, %s, %s, %s, %s)
+#             """,
+#             (course_code, credit_hours, subject, open_status, tag_1, tag_2, tag_3, tag_4, tag_5)
+#         )
+#         conn.commit()
+#         num_actual_row += 1
+#         print(f"Inserted {course_code}, Total inserted rows: {num_actual_row}")
+
+#     # Close the database connection
+#     cursor.close()
+#     conn.close()
+
+# @collage.app.route('/api/catalog/', methods=['POST'])
+# # @jwt_required()
+# def handle_catalog():
+#     # verify_user()
+#     connection = collage.model.get_db()  # open db
+#     # assume JSON data format is {'user_id": INT}
+#     data = flask.request.get_json()
+#     user_id = data['user_id']
+#     recommendations = recommend_classes(connection, user_id)
+
+#     # the user does not exist
+#     if recommendations == None:
+#         return flask.jsonify(
+#             {"status": "failure"}
+#         )
+
+#     recommendations = recommendations.to_dict(orient='records')
+
+#     for course in recommendations:
+#         course_id = course['course_id']
+
+#         with connection.cursor(dictionary=True) as cursor:
+#             course_info_query = """
+#                 SELECT subject code, catalog_number,
+#                 credit_hours, instructor_id, course_name,
+#                 course_description, class_topic, ai_img_url
+#                 FROM courses
+#                 WHERE course_id = %s
+#             """
+#             cursor.execute(course_info_query, (course_id,))
+#             course = cursor.fetchone()
+#         course['course_id'] = course_id
+
+#         # check whether an AI image has been generated for that course
+#         if course['ai_img_url'] == None:
+#             prompt = format_prompt(
+#                 course['course_description'], course['class_topic'])
+#             img_url = generate_image(
+#                 model="dall-e-3",
+#                 prompt=prompt
+#             )
+#             course['ai_img_url'] = img_url
+
+#             with connection.cursor(dictionary=True) as cursor:
+#                 img_query = """
+#                     UPDATE courses
+#                     SET ai_img_url = %s
+#                     WHERE course_id = %s
+#                 """
+#                 cursor.execute(img_query, (img_url, course_id))
+#                 connection.commit()
+
+#     # return the JSON of "a list of dictionaries"
+#     return flask.jsonify(recommendations)
+
 # @collage.app.route('/api/init/', methods=['GET'])
 # def initialize_classes():
 #     # classes = [{'subject_code': 'ASTRO 106', 'catalog_number': 0, 'credit_hours': 1, 'location': 'North Campus', 'instructor_id': 1,

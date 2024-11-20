@@ -6,26 +6,31 @@
     text-align: left;
     font-family: Helvetica Neue, Arial, sans-serif;
     border: 1px solid #c3c3c3;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    margin: 45px;
 }
 
 .suggested-connections-header {
     background-color: #f0f4ff;
-    height: 100px;
+    height: 120px;
     width: 100%;
-    padding-top: 15px;
     border-bottom: 1px solid #c3c3c3;
     border-top-left-radius: 31px;
     border-top-right-radius: 31px;
 }
 
-h2 {
-    margin: 10px 20px;
+.suggested-connections-header h2 {
+    margin: 0 20px;
     font-size: 1.2em;
     font-weight: bold;
     color: #333333;
+    padding-top: 15px;
 }
 
-p {
+.suggested-connections-header p {
     margin: 10px 20px;
     font-size: 0.8em;
     color: #666666;
@@ -49,8 +54,8 @@ p {
 }
 
 .profile-image {
-    width: 60px;
-    height: 60px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     margin-bottom: 5px;
 }
@@ -122,4 +127,5 @@ p {
 
 .explore-more-link:hover {
     text-decoration: underline;
+    cursor: pointer;
 }

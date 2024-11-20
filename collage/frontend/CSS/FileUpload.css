@@ -1,6 +1,6 @@
 .dropZone{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 2fr;
   grid-template-rows: auto auto;
   gap: 10px;
   align-items: center;
@@ -28,4 +28,23 @@
   grid-column: 2;
   grid-row: 2;
   margin: 0;
+}
+
+.dropZone .schedule-text{
+  grid-column: 3;
+  grid-row: 1;
+  margin: 0;
+}
+
+.dropZone .schedule-drop{
+  grid-column: 3;
+  grid-row: 2;
+  margin: 0;
+}
+
+.confirm-update{
+  grid-column: 5;
+  grid-row: 2;
+  margin-bottom: 0;
+  margin-top: 100%;
 }

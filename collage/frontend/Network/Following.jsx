@@ -3,72 +3,55 @@ import { useNavigate } from 'react-router-dom';
 import CharlieProfileImage from '../images/Charlie.svg';
 import FollowerTabIcon from '../images/follower-tab-icon.svg';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import '../CSS/NavBarFollowers.css';
 const NetworkBox = lazy(() => import('./NetworkBox'))
 
- const mockData = [
-    {
-        id: 1,
-        name: "Alice Smith",
-        username: "alice123",
-        profileImage: CharlieProfileImage,
-        major: "Computer Science",
-        gradYear: 2025,
-        followersCount: 120,
-        mutuals: ["John Doe", "Jane Doe"],
-    },
-    {
-        id: 2,
-        name: "Bob Johnson",
-        username:"bobJohn",
-        profileImage: CharlieProfileImage,
-        major: "Electrical Engineering",
-        gradYear: 2024,
-        followersCount: 80,
-        mutuals: ["Alice Smith", "Emily Davis"],
-    },
-    {
-        id: 3,
-        name: "Charlie Brown",
-        username: "charlie_0",
-        profileImage: CharlieProfileImage,
-        major: "Mechanical Engineering",
-        gradYear: 2023,
-        followersCount: 95,
-        mutuals: ["Bob Johnson", "Alice Smith"],
-    },
-    // Add more mock users as needed
-];
 
-const Following = ({ currentUser}) => {
-  const handleRemoveFollowing = async (followerId) => {
-      // try {
-      //     await axios.post('/api/removeFollower', {
-      //         userId: currentUser.id,
-      //         followerId
-      //     });
-      //     startTransition(() => {
-      //         setFollowers((prevFollowers) => prevFollowers.filter(follower => follower.id !== followerId));
-      //     });
-      // } catch (error) {
-      //     console.error("Error removing follower:", error);
-      // }
-  };
+const Following = ({ currentUser, handleViewProfile }) => {
+  const [following, setFollowing] = useState([]);
 
-  const handleViewProfile = (follower) => {
-      //navigate('/profile', { state: { follower } }); 
-      //TODO: figure out how to intergrate this
+  useEffect(() => {
+    axios.get(`/api/following/${currentUser}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Cookies.get('access_token')}`,
+        },
+    })
+        .then((response) => setFollowing(response.data))
+        .catch((err) => console.error(err));
+
+  }, [currentUser]);
+
+
+  const handleUnfollow = async (followerId) => {
+    const payload = {
+        user_id: currentUser,
+        follow_id: followerId
+    };
+    axios.delete(`/api/unfollow`, {
+        data: payload,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${Cookies.get('access_token')}`,
+            },
+    })
+    .then((response) => {
+        
+        setFollowing(prevFollowers => prevFollowers.filter(follower => follower.id !== followerId));
+    })
+    .catch((err) => console.error(err));
   };
 
   return (
     <>
       <NetworkBox 
-        userList={mockData} 
+        userList={following} 
         search={true} 
         buttonText1="View Profile" 
         handleButton1={handleViewProfile} 
         buttonText2="Unfollow" 
-        handleButton2={handleRemoveFollowing} 
+        handleButton2={handleUnfollow} 
         headerText="Following" 
         subText="View following part of your collage network" 
         searchText="Search my following"
