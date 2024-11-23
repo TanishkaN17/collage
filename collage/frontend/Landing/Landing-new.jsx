@@ -33,6 +33,10 @@ const Landing = () => {
                     <button className="landing-sign-up-button">Loading</button>
                 </Link> */}
             </div>
+            <div className="footer">
+                {/* &copy; 2024 Collage. All rights reserved.  */}
+                <p className="mobile-warning-p">Beta Release: Please access this application on a desktop for the best experience.</p>
+            </div>
         </div>
     );
 };

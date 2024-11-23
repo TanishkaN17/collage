@@ -13,7 +13,7 @@ import axios from 'axios';
 import icon from '../images/temp.png';
 const Rating = lazy(() => import('./rating'))
 
-const Preview = ({courseId, refetch}) => {
+const Preview = ({courseId, refetch, percentMatch}) => {
     const [opened, setOpened] = useState(false);
     const [value, setValue] = useState(2);
     const [saved, setSaved] = useState(false);
@@ -109,7 +109,7 @@ const Preview = ({courseId, refetch}) => {
                         <div className="middle">
                             <h1>{courseData.course_code}</h1>
                             <p>{courseData.course_name}</p>
-                            <p className="match">{courseData.percent_match} match</p>
+                            <p className="match">{percentMatch}% match</p>
                         </div>
                         <div className="rating-flex">
                             <div className="rate-and-save">

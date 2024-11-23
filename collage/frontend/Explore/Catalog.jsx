@@ -14,7 +14,8 @@ const Catalog = ({currData, refetch, handleExploreMore}) => {
     //                     credit_color: "red", header_color: "green", icon_color: "blue"
     //                     }]
     const [course, setCourse] = useState(false);
-    const [courseId, setCourseId] = useState('econ101');
+    const [courseId, setCourseId] = useState('econ101'); // just set course data and pass it
+    const [percentMatch, setPercentMatch] = useState(0);
     const handleBack = () => {
         setCourse(false);
     };
@@ -25,10 +26,10 @@ const Catalog = ({currData, refetch, handleExploreMore}) => {
                 <div className="right-col">
                     <div className="wrapper-grid">
                         {currData.length < 1 && <Title>No Results Found</Title>}
-                        {currData.length > 0 && currData.map((data) => <CourseTag id={data.course_id} key={data.course_id} data={data} onClick={() => {setCourse(true); setCourseId(data.course_id);}}/>)}
+                        {currData.length > 0 && currData.map((data) => <CourseTag id={data.course_id} key={data.course_id} data={data} onClick={() => {setCourse(true); setCourseId(data.course_id); setPercentMatch(data.percent_match);}}/>)}
                     </div>
                 </div></>}
-            {course && <IndividualCourse courseId={courseId} handleBack={handleBack} refetch={refetch} handleExploreMore={handleExploreMore}/>}</>
+            {course && <IndividualCourse courseId={courseId} handleBack={handleBack} refetch={refetch} handleExploreMore={handleExploreMore} percentMatch={percentMatch}/>}</>
     )
 };
 

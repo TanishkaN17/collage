@@ -9,17 +9,32 @@
   width: 100%;
 }
 
+.landing{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: radial-gradient(circle, #8DADFF, #738ED1);
+  justify-content: center;
+  align-items: center;
+}
+
+.footer{
+  font-size: 0.7rem;
+  margin-top: auto;
+}
+
 .landing-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: radial-gradient(circle, #8DADFF, #738ED1);
+  /* height: 100vh;
+  background: radial-gradient(circle, #8DADFF, #738ED1); */
   color: white;
   padding-left: 100px;
   padding-right: 100px;
   gap: 50px;
+  flex-grow: 1;
 }
 
 .landing-logo {
@@ -38,7 +53,7 @@
   font-size: 1rem;
   font-family: "Helvetica Neue-Regular", Helvetica;
   margin-bottom: 30px;
-  width: 600px;
+  width: 100%;
 }
 
 .error-link{
@@ -70,7 +85,86 @@
   cursor: pointer;
 }
 
-.landing-page-box{
+/* Responsive styles for smaller screens */
+@media (max-width: 1024px) {
+  .landing-container {
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 30px;
+  }
+
+  .landing-logo {
+    width: 150px;
+  }
+
+  .landing-tagline {
+    font-size: 1.2rem;
+  }
+
+  .landing-description {
+    font-size: 0.9rem;
+    max-width: 90%;
+  }
+
+  .landing-video-demo {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-container {
+    padding: 15px;
+  }
+
+  .landing-logo {
+    width: 120px;
+  }
+
+  .landing-tagline {
+    font-size: 1rem;
+  }
+
+  .landing-description {
+    font-size: 0.85rem;
+    max-width: 100%;
+  }
+
+  .landing-video-demo {
+    width: 100%;
+  }
+
+  .landing-sign-up-button {
+    padding: 8px 40px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-container {
+    gap: 20px;
+  }
+
+  .landing-logo {
+    width: 100px;
+  }
+
+  .landing-tagline {
+    font-size: 0.9rem;
+  }
+
+  .landing-description {
+    font-size: 0.8rem;
+  }
+
+  .landing-sign-up-button {
+    padding: 6px 30px;
+    font-size: 0.8rem;
+  }
+}
+
+/* .landing-page-box{
   position: relative;
   width: 70vw;
   max-width: 100%;
@@ -288,4 +382,4 @@
   text-decoration: underline;
   text-decoration-color: black;
   text-decoration-thickness: 2px;
-}
+} */

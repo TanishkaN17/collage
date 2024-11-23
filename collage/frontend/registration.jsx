@@ -18,6 +18,7 @@ const Dev = lazy(() => import('./Dev'));
 const Home = lazy(() => import('./HomeWrapper'));
 const NetworkWrapper = lazy(() => import('./Network/NetworkWrapper'));
 const Loading = lazy(() => import('./loading/LoadScreen'));
+const Signup4 = lazy(() => import('./Signup/Signup-4'));
 
 export default function Registration() {
   const [loggedIn, setLoggedIn] = useState(false);
