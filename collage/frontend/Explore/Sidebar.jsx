@@ -23,11 +23,14 @@ const Sidebar = () => {
     
     function formatDate(dateString) {
         // Create a new Date object from the date string
-        var date = new Date(dateString);
-        // Define options for formatting
-        var options = { month: 'long', day: 'numeric' };
-        // Format the date to "Month Day"
-        return date.toLocaleDateString('en-US', options);
+        console.log(data.enrollment_date);
+        const date = new Date(dateString);
+
+        // Extract the month and day in UTC
+        const month = date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+        const day = date.getUTCDate();
+
+        return `${month} ${day}`;
     }
 
     return (
