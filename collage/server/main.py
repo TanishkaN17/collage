@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, JWTManager,jwt_required
 from flask_cors import CORS
 from collage.server.nlp import get_semantic_similarity
-from firebase_admin import credentials, auth, initialize_app
+from firebase_admin import credentials, auth, initialize_app, storage
+from PyPDF2 import PdfReader
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import json
 from itsdangerous import URLSafeSerializer, BadData
 
@@ -22,7 +25,118 @@ load_dotenv()  # Load the environment variables from the .env file
 GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
 GOOGLE_SECRET_KEY = os.environ['GOOGLE_SECRET_KEY']
 
-initialize_app(credentials.Certificate(json.loads(os.environ['FIREBASE_CONFIG'])))
+initialize_app(
+    credentials.Certificate(json.loads(os.environ['FIREBASE_CONFIG'])),
+    {
+        "storageBucket": "collage-849c3.appspot.com"
+    }
+)
+
+def extract_text_from_pdf(file_path):
+    """
+    Extract text from a PDF using PyPDF2.
+
+    Args:
+        file_path (str): Path to the PDF file.
+
+    Returns:
+        str: Extracted text from the PDF.
+    """
+    try:
+        reader = PdfReader(file_path)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text()
+        return text
+    except Exception as e:
+        print(f"Error reading PDF file: {e}")
+        return ""
+
+def extract_keywords_from_resume(file_path):
+    """
+    Extract keywords from a resume PDF using PyPDF2 and TF-IDF.
+
+    Args:
+        file_path (str): Path to the resume PDF.
+
+    Returns:
+        list: List of extracted keywords.
+    """
+    # Extract text from the PDF
+    text = extract_text_from_pdf(file_path)
+
+    if not text.strip():
+        raise ValueError("No text could be extracted from the PDF.")
+
+    vectorizer = TfidfVectorizer(max_features=30, stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform([text])
+    feature_names = vectorizer.get_feature_names_out()
+
+    # Use the TF-IDF scores to sort keywords
+    tfidf_scores = tfidf_matrix.toarray()[0]  # Get scores for the single document
+    keywords_with_scores = sorted(
+        zip(feature_names, tfidf_scores),
+        key=lambda x: x[1],
+        reverse=True
+    )
+
+    keywords = [word for word, score in keywords_with_scores]
+    return keywords
+
+# @collage.app.route('/api/update-keywords/', methods=['POST'])
+# @jwt_required()
+def update_user_keywords():
+    connection = collage.model.get_db()
+    uid = flask.session['uid']
+
+    with connection.cursor(dictionary=True) as cursor:
+        cursor.execute("SELECT * FROM user_keywords WHERE user_id = %s", (flask.session['user_id'],))
+        user_keywords = cursor.fetchone()
+        if user_keywords is None:
+            # Fetch and parse the resume
+            resume_path = f"users/{uid}/resume.pdf"
+            bucket = storage.bucket("collage-849c3.appspot.com")
+            blob = bucket.blob(resume_path)
+
+            if not blob.exists():
+                print("Warning: resume not found")
+                return ""
+
+            temp_path = f"/tmp/{uid}_resume.pdf"
+            blob.download_to_filename(temp_path)
+
+            user_keywords = extract_keywords_from_resume(temp_path)
+            user_keywords = ','.join(user_keywords)
+
+            cursor.execute(
+                "INSERT INTO user_keywords (user_id, keywords) VALUES (%s, %s)",
+                (flask.session['user_id'], user_keywords)
+            )
+            print(f"Success: inserted keywords: {user_keywords}")
+            connection.commit()
+            return user_keywords
+        return user_keywords["keywords"]
+
+def calculate_similarity(user_keywords, course_keywords):
+    # Normalize to lowercase for case-insensitive matching
+    user_keywords_set = {keyword.lower() for keyword in user_keywords}
+
+    # Tokenize course keywords into words or subwords, and normalize to lowercase
+    course_words = set()
+    for phrase in course_keywords:
+        words = phrase.lower().split()  # Convert to lowercase and split
+        course_words.update(words)
+
+    # Compute overlap with subword matching
+    overlap = sum(1 for user_word in user_keywords_set if any(user_word in course_word for course_word in course_words))
+    # total = len(user_keywords_set)
+
+    if (overlap >= 2):
+        return 1
+    elif (overlap == 1):
+        return 0.5
+    else:
+        return 0
 
 def verify_user():
     """
@@ -279,6 +393,11 @@ def search_with_filters():
         cursor.execute(query)
         results = cursor.fetchall()
 
+        with connection.cursor(dictionary=True) as cursor:
+            user_keywords = update_user_keywords()
+            if (user_keywords != ""):
+                user_keywords = user_keywords.split(',')
+
         for item in results:
             # Extract course tags
             course_tags = [item[f'tag_{str(i)}'] for i in range(1, 6) if item[f'tag_{str(i)}']]
@@ -290,7 +409,10 @@ def search_with_filters():
                 item['rating'] = item['total_rating'] / item['num_ratings']
 
             # Calculate semantic match for tags
-            semantic_score = get_semantic_similarity()
+            semantic_score = calculate_similarity(user_keywords, course_tags)
+            # if (semantic_score > 0):
+                # print(f"Semantic score is greater than 0: {semantic_score}")
+            # print(f"semantic score: {semantic_score}")
 
             # Normalize the number of saves
             max_saves = max([r['save_count'] for r in results]) if results else 1
@@ -299,11 +421,14 @@ def search_with_filters():
             else:
                 save_score = 0
 
+            semantic_weight = 0.5
+            rating_weight = 0.3
+            save_weight = 1 - semantic_weight - rating_weight
             # Combine semantic score, rating, and save score for percent match
             item['percent_match'] = round((
-                0.2 * semantic_score +
-                0.5 * (item['rating'] / 5) +
-                0.3 * save_score
+                semantic_weight * semantic_score +
+                rating_weight * (item['rating'] / 5) +
+                save_weight * save_score
             ) * 100)
 
             if item['credit_hours'] == 1:
@@ -511,7 +636,7 @@ def view_profile():
             INSERT INTO profileViewers (viewer_id, viewed_id) VALUES (%s, %s)
         """
         cursor.execute(query, (flask.session['user_id'], viewed_id))
-    
+
     connection.commit()
     return jsonify(status='success'), 200
 
