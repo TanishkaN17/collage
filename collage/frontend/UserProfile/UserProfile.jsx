@@ -56,7 +56,7 @@ function UserProfile({loggedIn, following, profileUser, handleExploreMore}) {
                     <Grid.Col span={12}>
                         <div className="schedule">
                             <h2>Schedule</h2>
-                            <Schedule/>
+                            <Schedule isUser={loggedIn} userId={profileUser}/>
                         </div>
                     </Grid.Col>
                     <Grid.Col span={12}>
