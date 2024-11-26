@@ -19,7 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-const Schedule = ({userName, upload, isUser}) => {
+const Schedule = ({userName, upload, isUser, userId}) => {
     const [imageFileName, setImageFileName] = useState('');
     const [imageUrl, setImgURL] = useState('');
     const [uid, setUid] = useState('');
@@ -44,21 +44,30 @@ const Schedule = ({userName, upload, isUser}) => {
     };
 
     useEffect(() => {
-        console.log(userName);
-        const fetchScheduleImage = async () => {
-            try {
-                await axios.get(`/api/current-user`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${Cookies.get('access_token')}`,
-                    },
-                }).then(response => {setUid(response.data.uid); fetchFiles(response.data.uid); console.log(response.data.uid);});
-            } catch (error) {
-                console.error('Failed to load schedule image:', error);
-            }
-        };
+        if (isUser){
+            console.log(userName);
+            const fetchScheduleImage = async () => {
+                try {
+                    await axios.get(`/api/current-user`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${Cookies.get('access_token')}`,
+                        },
+                    }).then(response => {setUid(response.data.uid); fetchFiles(response.data.uid); console.log(response.data.uid);});
+                } catch (error) {
+                    console.error('Failed to load schedule image:', error);
+                }
+            };
 
-        fetchScheduleImage();
+            fetchScheduleImage();
+        } else {
+            axios.get(`/api/get-schedule/${userId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${Cookies.get('access_token')}`,
+                },
+            }).then(response => setImgURL(response.data.schedule_ics_url));
+        }
     }, [userName, upload]);
 
     // Handle delete action

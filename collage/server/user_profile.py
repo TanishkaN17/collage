@@ -53,6 +53,32 @@ def update_pfp():
     connection.commit()
     return jsonify(success=True), 200 # also send back any other needed information later
 
+@collage.app.route('/api/update-schedule', methods=['POST'])
+@jwt_required()
+def update_schedule():
+    data = request.get_json()
+    connection = collage.model.get_db()
+    with connection.cursor(dictionary=True) as cursor:
+        update_query = """
+            UPDATE users SET schedule_ics_url = %s WHERE user_id = %s
+        """
+        cursor.execute(update_query, (data['schedule_img_url'], data['user_id']))
+    connection.commit()
+    return jsonify(success=True), 200
+
+@collage.app.route('/api/get-schedule/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_schedule(user_id):
+    connection = collage.model.get_db()
+    with connection.cursor(dictionary=True) as cursor:
+        query = """
+            SELECT schedule_ics_url FROM users WHERE user_id = %s
+        """
+        cursor.execute(query, (user_id,))
+        url = cursor.fetchone()['schedule_ics_url']
+    connection.commit()
+    return jsonify(schedule_ics_url=url), 200
+
 @collage.app.route('/api/test-pfp', methods=['GET'])
 @jwt_required()
 def get_test_pfp():
