@@ -24,7 +24,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-const FileUpload = ({ userName, handleUpload }) => {
+const FileUpload = ({ userId, handleUpload }) => {
   const [resumeFileName, setResumeFileName] = useState('');
   const [transcriptFileName, setTranscriptFileName] = useState('');
   const [scheduleFileName, setScheduleFileName] = useState('');
@@ -86,7 +86,25 @@ const FileUpload = ({ userName, handleUpload }) => {
   .then((response) => {console.log(response.data.uid); setUid(response.data.uid); fetchFiles(response.data.uid)})
   .catch((err) => console.error(err));
     
-  }, [userName]);
+  }, [userId]);
+
+  const saveScheduleUrl = (url) => {
+    const payload = {
+      schedule_img_url: url,
+      user_id: userId
+    };
+    
+    axios.post(`/api/update-schedule`, payload, {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${Cookies.get('access_token')}`,
+            },
+    })
+    .then((response) => {
+        
+    })
+    .catch((err) => console.error(err));
+  }
 
   const handleResumeUpload = (files) => {
     if (files && files[0]) {
@@ -107,7 +125,7 @@ const FileUpload = ({ userName, handleUpload }) => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
             console.log(url)
-            })
+          })
           
         }
       );
@@ -163,7 +181,9 @@ const FileUpload = ({ userName, handleUpload }) => {
         () => {
           // Upload completed successfully
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            console.log(url);
             handleUpload();
+            saveScheduleUrl(url);
           })
         }
       );

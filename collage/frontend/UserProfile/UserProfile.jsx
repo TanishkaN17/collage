@@ -57,13 +57,13 @@ function UserProfile({loggedIn, following, profileUser, handleExploreMore}) {
                         <h2>Schedule Builder</h2>
                         {/* <p>Temporarily down :(</p> */}
                         <div className="builder">
-                            <FileUpload userName={username} handleUpload={handleUpload}/>
+                            <FileUpload userId={profileUser} handleUpload={handleUpload}/>
                         </div>
                     </Grid.Col>
                     <Grid.Col span={12}>
                         <div className="schedule">
                             <h2>Schedule <span>(Upload a screenshot from Wolverine Access)</span></h2>
-                            <Schedule userName={username} upload={upload} isUser={loggedIn}/>
+                            <Schedule userName={username} upload={upload} isUser={loggedIn} userId={profileUser}/>
                         </div>
                     </Grid.Col>
                     <Grid.Col span={12}>
@@ -93,6 +93,7 @@ function UserProfile({loggedIn, following, profileUser, handleExploreMore}) {
                         <Grid.Col span={12}>
                             <div className="schedule">
                                 <h2>Schedule</h2>
+                                <Schedule userName={username} upload={upload} isUser={loggedIn} userId={profileUser}/>
                             </div>
                         </Grid.Col>
                         <Grid.Col span={12}>
