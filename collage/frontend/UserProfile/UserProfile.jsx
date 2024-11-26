@@ -14,7 +14,8 @@ import saved from '../images/blurredSaved.png';
 import schedule from '../images/blurredSchedule.png';
 
 function UserProfile({loggedIn, following, profileUser, handleExploreMore}) {
-    
+    const [upload, setUpload] = useState(false);
+
     // console.log("PROFILE", profileUser);
     const [username, setUsername] = useState('');
     useEffect(() => {
@@ -29,7 +30,13 @@ function UserProfile({loggedIn, following, profileUser, handleExploreMore}) {
           // console.log("ENROLLMENT", profile.full_name);
         })
         .catch(err => {console.error(err)});
-      }, []);
+    }, []);
+
+    //changes variable back and forth every time a user uploads their schedule file, can add to dependency array for any useEffect that shows a image or profile to rerender every time something is uploaded
+    const handleUpload = () => {
+        setUpload(!upload);
+    }
+    
     if (loggedIn) {
         return(
             // personal
@@ -50,13 +57,13 @@ function UserProfile({loggedIn, following, profileUser, handleExploreMore}) {
                         <h2>Schedule Builder</h2>
                         {/* <p>Temporarily down :(</p> */}
                         <div className="builder">
-                            <FileUpload userName={username}/>
+                            <FileUpload userName={username} handleUpload={handleUpload}/>
                         </div>
                     </Grid.Col>
                     <Grid.Col span={12}>
                         <div className="schedule">
-                            <h2>Schedule</h2>
-                            <Schedule isUser={loggedIn} userId={profileUser}/>
+                            <h2>Schedule <span>(Upload a screenshot from Wolverine Access)</span></h2>
+                            <Schedule userName={username} upload={upload} isUser={loggedIn}/>
                         </div>
                     </Grid.Col>
                     <Grid.Col span={12}>

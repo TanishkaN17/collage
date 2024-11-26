@@ -24,15 +24,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-const FileUpload = ({ userName }) => {
+const FileUpload = ({ userName, handleUpload }) => {
   const [resumeFileName, setResumeFileName] = useState('');
   const [transcriptFileName, setTranscriptFileName] = useState('');
   const [scheduleFileName, setScheduleFileName] = useState('');
   const [resumeText, setResumeText] = useState('Click to select a file or drag here');
   const [transcriptText, setTranscriptText] = useState('Click to select a file or drag here');
   const [scheduleText, setScheduleText] = useState('Click to select a file or drag here');
+  const [scheduleHeader, setScheduleHeader] = useState('Upload your schedule:');
   const [resumeFile, setResumeFile] = useState();
   const [transcriptFile, setTranscriptFile] = useState();
+  const [scheduleFile, setScheduleFile] = useState();
   const [uid, setUid] = useState('');
   const fetchFiles = async(fetchUid) => {
     try{
@@ -65,8 +67,9 @@ const FileUpload = ({ userName }) => {
       const scheduleRef = ref(storage, `users/${fetchUid}/schedule.ics`);
       const scheduleMetadata = await getMetadata(scheduleRef);
       if(scheduleMetadata){
-        setTranscriptFileName(scheduleMetadata.name);
-        setTranscriptText('Upload new schedule');
+        setScheduleFileName(scheduleMetadata.name);
+        setScheduleText('Upload new schedule');
+        setScheduleHeader('Upload new schedule:');
       }
     } catch (error) {
       
@@ -80,7 +83,7 @@ const FileUpload = ({ userName }) => {
       "Authorization": `Bearer ${Cookies.get('access_token')}`,
       },
   })
-  .then((response) => {setUid(response.data.uid); fetchFiles(response.data.uid)})
+  .then((response) => {console.log(response.data.uid); setUid(response.data.uid); fetchFiles(response.data.uid)})
   .catch((err) => console.error(err));
     
   }, [userName]);
@@ -146,7 +149,8 @@ const FileUpload = ({ userName }) => {
       setScheduleFileName(files[0].name);
 
       // Upload the file to Firebase Storage
-      const storageRef = ref(storage, `users/${uid}/schedule.ics`);
+      const fileExtension = files[0].name.split('.').pop();
+      const storageRef = ref(storage, `users/${uid}/schedule.${fileExtension}`);
       const uploadTask = uploadBytesResumable(storageRef, files[0]);
 
       uploadTask.on("state_changed",
@@ -158,7 +162,9 @@ const FileUpload = ({ userName }) => {
         },
         () => {
           // Upload completed successfully
-          
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            handleUpload();
+          })
         }
       );
     }
@@ -237,14 +243,14 @@ const FileUpload = ({ userName }) => {
       </Dropzone>
       {/* <div className="confirm-update"><Button>Update</Button></div> */}
       
-      {/* <Text size="xl" className="schedule-text">{scheduleFileName || 'Upload your schedule:'}</Text>
+      <Text size="xl" className="schedule-text">{scheduleHeader}</Text>
       <Dropzone
         multiple={false}
         style={{ height: "100%", color: '#5d5d5d' }}
         onDrop={handleScheduleUpload}
         onReject={(files) => console.log('rejected files', files)}
         maxSize={5 * 1024 ** 2}
-        accept={PDF_MIME_TYPE}
+        accept={['image/jpeg', 'image/png']}
         className="schedule-drop"
       >
         <Group position="center" spacing="xl" mih={60} style={{ pointerEvents: 'none' }}>
@@ -270,7 +276,7 @@ const FileUpload = ({ userName }) => {
             {scheduleText}
           </Text>
         </Group>
-      </Dropzone> */}
+      </Dropzone>
     </div>
   );
 };
