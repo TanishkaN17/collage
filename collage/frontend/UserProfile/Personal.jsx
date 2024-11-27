@@ -129,10 +129,15 @@ const Personal = ({isUser, userId}) => {
     if (files && files[0]) {
       setImageFile(files[0]);
       setImageFileName(files[0].name);
-
-      const storageRef = ref(storage, `photos/${parseEmail(profile.email)}/${files[0].name}`);
+      axios.get(`/api/current-user`, {
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Cookies.get('access_token')}`,
+        },
+    })
+    .then((response) => {
+      const storageRef = ref(storage, `photos/${response.data.uid}`);
       const uploadTask = uploadBytesResumable(storageRef, files[0]);
-
       uploadTask.on("state_changed", 
         (snapshot) => {
           //can track progress here
@@ -145,7 +150,10 @@ const Personal = ({isUser, userId}) => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            
+            setProfile((prevProfile) => ({
+              ...prevProfile,
+              profile_img_url: url,
+            }));
             fetch("/api/update-pfp", {
               method: "POST",
               credentials: "include",
@@ -156,10 +164,12 @@ const Personal = ({isUser, userId}) => {
               }, 
               body: JSON.stringify({profile_img_url: url 
               }),
-            },)
+            },);
           });
         }
       );
+    })
+    .catch((err) => console.error(err));
     }
     setOpened(false);
   };

@@ -84,8 +84,17 @@ def ai_course_finder():
     department = course_data.get('department', '')
     tags = ', '.join(course_data.get('tags', []))
 
+    connection = collage.model.get_db()
+    with connection.cursor(dictionary=True) as cursor:
+        cursor.execute("SELECT * FROM user_keywords WHERE user_id = %s", (flask.session['user_id'],))
+        user_keywords = cursor.fetchone()
+        if user_keywords is not None:
+            user_keywords = user_keywords["keywords"]
+        else:
+            user_keywords = ""
+
     # Construct the prompt with course-specific information
-    prompt = form_prompt_2(course_name, course_description, credits, department, tags, active_tab)
+    prompt = form_prompt_2(course_name, course_description, credits, department, tags, active_tab, user_keywords)
 
     response = collage_ai_agent(user_input, prompt)
     return jsonify({'response': response})
@@ -162,7 +171,7 @@ def get_saved_courses(user_id):
 
             return jsonify({"courses": course_details}), 200
 
-    except mysql.connector.Error as err: 
+    except mysql.connector.Error as err:
         print("Error:", err)
         if err.errno == 1062:
             return jsonify({'error': 'Course already saved'}), 400
@@ -176,7 +185,7 @@ def is_course_saved(course_id):
         connection = collage.model.get_db()
         with connection.cursor(dictionary=True) as cursor:
             query = """
-                SELECT course_id 
+                SELECT course_id
                 FROM saved_courses
                 WHERE user_id = %s AND course_id = %s
             """
@@ -214,24 +223,24 @@ def top_six_followers():
     connection = collage.model.get_db()
     with connection.cursor(dictionary=True) as cursor:
         query = """
-            SELECT 
-                u.user_id AS id, 
-                u.full_name AS name, 
+            SELECT
+                u.user_id AS id,
+                u.full_name AS name,
                 u.major,
-                u.profile_img_url AS profileImage, 
+                u.profile_img_url AS profileImage,
                 u.followers_count
-            FROM 
+            FROM
                 users u
-            LEFT JOIN 
+            LEFT JOIN
                 connections c
-            ON 
-                u.user_id = c.followed_id 
+            ON
+                u.user_id = c.followed_id
                 AND c.follower_id = %s
                 AND (c.relationship = 'following' OR c.relationship = 'pending')
-            WHERE 
+            WHERE
                 c.follower_id IS NULL
                 AND u.user_id != %s
-            ORDER BY 
+            ORDER BY
                 u.followers_count DESC
             LIMIT 6;
         """
