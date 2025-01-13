@@ -151,7 +151,7 @@ def home():
     return flask.jsonify(working=True), 200
 
 
-@collage.app.route('/api/login/', methods=['POST'])
+@collage.app.route('/api/login', methods=['POST'])
 def login():
     id_token = request.json.get("idToken")
     user_info = auth.verify_id_token(id_token)

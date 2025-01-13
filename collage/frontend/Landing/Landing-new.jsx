@@ -26,9 +26,9 @@ const Landing = () => {
                     muted
                     playsInline
                 />
-                {/* <Link to="/collage/dev">
+                <Link to="/collage/dev">
                     <button className="landing-sign-up-button">Dev Page</button>
-                </Link> */}
+                </Link>
                 {/* <Link to="/collage/loading">
                     <button className="landing-sign-up-button">Loading</button>
                 </Link> */}

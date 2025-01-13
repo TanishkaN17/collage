@@ -1,0 +1,535 @@
+:root {
+    /*COLORS*/
+    --primitives-colors-black: rgba(0, 0, 0, 1);
+    --primitives-colors-blue-purple: rgba(160, 193, 255, 1);
+    --primitives-colors-blue-utility: rgba(27, 113, 243, 1);
+    --primitives-colors-charcoal: rgba(36, 36, 36, 1);
+    --primitives-colors-coral: rgba(255, 124, 124, 1);
+
+    --primitives-colors-dark-bluepurple: rgba(66, 75, 92, 1);
+    --primitives-colors-dark-coral: rgba(109, 54, 54, 1);
+    --primitives-colors-dark-gold: rgba(103, 93, 77, 1);
+    --primitives-colors-dark-mint: rgba(63, 92, 66, 1);
+    --primitives-colors-frosty-blue: rgba(239, 244, 255, 1);
+    --primitives-colors-gray-1: rgba(240, 240, 240, 1);
+    --primitives-colors-gray-2: rgba(116, 116, 116, 1);
+    --primitives-colors-green-utility: rgba(67, 155, 76, 1);
+    --primitives-colors-light-coral: rgba(247, 226, 226, 1);
+    --primitives-colors-light-gold: rgba(255, 230, 193, 1);
+    --primitives-colors-mint: rgba(192, 255, 198, 1);
+    --primitives-colors-mint-2: rgba(135, 208, 151, 1);
+    --primitives-colors-star-yellow: rgba(255, 211, 57, 1);
+    --primitives-colors-white: rgba(255, 255, 255, 1);
+
+
+
+    /* NUMBERS */
+    --primitives-numbers-tag-border-radius: 12px;
+    --primitives-numbers-card-border-radius: 10px;
+    --primitives-numbers-cta-stroke-width: 1;
+    --primitives-numbers-pill-border-radius: 50;
+    --primitives-numbers-schedule-class-border: 6px;
+
+    /*FONTS*/
+    --body-text-font-family: "Helvetica Neue", Helvetica;
+    --body-text-font-size: 16px;
+    --body-text-font-style: normal;
+    --body-text-font-weight: 400;
+    --body-text-letter-spacing: 0px;
+    --body-text-line-height: 20px;
+
+    --CTA-text-font-family: "Helvetica Neue", Helvetica;
+    --CTA-text-font-size: 16px;
+    --CTA-text-font-style: normal;
+    --CTA-text-font-weight: 400;
+    --CTA-text-letter-spacing: 0px;
+    --CTA-text-line-height: normal;
+
+    --h1-subtitle-font-family: "Helvetica Neue", Helvetica;
+    --h1-subtitle-font-size: 18px;
+    --h1-subtitle-font-style: normal;
+    --h1-subtitle-font-weight: 400;
+    --h1-subtitle-letter-spacing: 0px;
+    --h1-subtitle-line-height: normal;
+
+    --page-h1-font-family: "Proxima Nova", Helvetica;
+    --page-h1-font-size: 48px;
+    --page-h1-font-style: normal;
+    --page-h1-font-weight: 700;
+    --page-h1-letter-spacing: 0px;
+    --page-h1-line-height: normal;
+
+    --section-header-font-family: "Helvetica Neue", Helvetica;
+    --section-header-font-size: 20px;
+    --section-header-font-style: normal;
+    --section-header-font-weight: 700;
+    --section-header-letter-spacing: 0px;
+    --section-header-line-height: 20px;
+
+    --section-subtitle-font-family: "Helvetica Neue", Helvetica;
+    --section-subtitle-font-size: 16px;
+    --section-subtitle-font-style: normal;
+    --section-subtitle-font-weight: 400;
+    --section-subtitle-letter-spacing: 0px;
+    --section-subtitle-line-height: normal;
+
+    --small-CTA-text-font-family: "Helvetica Neue", Helvetica;
+    --small-CTA-text-font-size: 14px;
+    --small-CTA-text-font-style: normal;
+    --small-CTA-text-font-weight: 400;
+    --small-CTA-text-letter-spacing: 0px;
+    --small-CTA-text-line-height: normal;
+
+    --tokens-body-text-color: var(--primitives-colors-black);
+    --tokens-credits-tag-bg: var(--primitives-colors-coral);
+}
+
+/* General Utility Classes */
+.flex {
+    display: flex;
+}
+
+.center {
+    justify-content: center;
+    align-items: center;
+}
+
+.rounded {
+    border-radius: var(--pill-border-radius);
+}
+
+
+/* CTAs + Tokens*/
+
+/*Course tags*/
+.course-tags {
+    align-items: center;
+    border: 1px solid;
+    border-radius: var(--primitives-numbers-tag-border-radius);
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    padding: 6px 12px;
+    position: relative;
+}
+
+.course-tags .text-wrapper {
+    align-self: stretch;
+    font-family: var(--CTA-text-font-family);
+    font-size: var(--CTA-text-font-size);
+    font-style: var(--CTA-text-font-style);
+    font-weight: var(--CTA-text-font-weight);
+    letter-spacing: var(--CTA-text-letter-spacing);
+    line-height: var(--CTA-text-line-height);
+    margin-top: -1.00px;
+    position: relative;
+}
+
+.course-tags.subject {
+    background-color: var(--primitives-colors-coral);
+    border-color: var(--primitives-colors-dark-coral);
+    display: inline-flex;
+}
+
+.course-tags.status {
+    background-color: var(--primitives-colors-mint);
+    border-color: var(--primitives-colors-dark-mint);
+    display: inline-flex;
+}
+
+.course-tags.department {
+    background-color: var(--primitives-colors-light-gold);
+    border-color: var(--primitives-colors-dark-gold);
+    display: inline-flex;
+}
+
+.course-tags.credits {
+    background-color: var(--primitives-colors-blue-purple);
+    border-color: var(--primitives-colors-dark-bluepurple);
+    display: flex;
+    width: 109px;
+}
+
+.course-tags.subject .text-wrapper {
+    color: var(--primitives-colors-dark-coral);
+}
+
+.course-tags.status .text-wrapper {
+    color: var(--primitives-colors-dark-mint);
+}
+
+.course-tags.department .text-wrapper {
+    color: var(--primitives-colors-dark-gold);
+}
+
+.course-tags.credits .text-wrapper {
+    color: var(--primitives-colors-dark-bluepurple);
+}
+
+
+/*
+
+USE:
+<div class="course-tags department">
+<div class="text-wrapper">Engineering</div>
+</div>
+
+*/
+
+
+
+/*Course CTAs*/
+
+.course-ctas {
+    align-items: center;
+    border: 1px solid;
+    border-color: var(--primitives-colors-black);
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    display: flex;
+    gap: 8px;
+    height: 34px;
+    justify-content: center;
+    padding: 12.73px 18px;
+    position: relative;
+    width: 90px;
+}
+
+.course-ctas .text-wrapper {
+    color: var(--primitives-colors-black);
+    font-family: var(--CTA-text-font-family);
+    font-size: var(--CTA-text-font-size);
+    font-style: var(--CTA-text-font-style);
+    font-weight: var(--CTA-text-font-weight);
+    letter-spacing: var(--CTA-text-letter-spacing);
+    line-height: var(--CTA-text-line-height);
+    margin-bottom: -2.73px;
+    margin-top: -4.73px;
+    position: relative;
+}
+
+.course-ctas.pressed {
+    background-color: var(--primitives-colors-blue-purple);
+}
+
+.course-ctas.default {
+    background-color: var(--primitives-colors-frosty-blue);
+}
+
+.course-ctas.hover {
+    background-color: var(--primitives-colors-blue-purple);
+}
+
+/* Sign Up Tags */
+
+.sign-up-tags {
+    align-items: center;
+    border: 1px solid;
+    border-color: var(--primitives-colors-black);
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    display: inline-flex;
+    gap: 12px;
+    height: 34px;
+    justify-content: center;
+    padding: 8px 12px;
+    position: relative;
+}
+
+.sign-up-tags .text-wrapper {
+    color: var(--primitives-colors-black);
+    font-family: var(--small-CTA-text-font-family);
+    font-size: var(--small-CTA-text-font-size);
+    font-style: var(--small-CTA-text-font-style);
+    font-weight: var(--small-CTA-text-font-weight);
+    letter-spacing: var(--small-CTA-text-letter-spacing);
+    line-height: var(--small-CTA-text-line-height);
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.sign-up-tags.pressed {
+    background-color: var(--primitives-colors-blue-purple);
+}
+
+.sign-up-tags.default {
+    background-color: #ffffff;
+}
+
+.sign-up-tags.hover {
+    background-color: var(--primitives-colors-frosty-blue);
+}
+
+/* Logout */
+
+.log-out {
+    align-items: center;
+    background-color: var(--primitives-colors-gray-1);
+    border: 1px solid;
+    border-color: #232323;
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    display: inline-flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 12px 18px;
+    position: relative;
+}
+
+.log-out .text-wrapper {
+    color: #232323;
+    font-family: var(--CTA-text-font-family);
+    font-size: var(--CTA-text-font-size);
+    font-style: var(--CTA-text-font-style);
+    font-weight: var(--CTA-text-font-weight);
+    letter-spacing: var(--CTA-text-letter-spacing);
+    line-height: var(--CTA-text-line-height);
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+    width: 59px;
+}
+
+/* Network CTAs - Connect */
+
+.network-ctas-CONNECT {
+    align-items: center;
+    border: 1px solid;
+    border-color: var(--primitives-colors-coral);
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    display: inline-flex;
+    gap: 10px;
+    height: 34px;
+    justify-content: center;
+    padding: 8px 12px;
+    position: relative;
+}
+
+.network-ctas-CONNECT .text-wrapper {
+    color: var(--primitives-colors-black);
+    font-family: "Helvetica Neue-Regular", Helvetica;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: -2.00px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.network-ctas-CONNECT.hover {
+    background-color: var(--primitives-colors-light-coral);
+}
+
+
+/* Network CTAs - Requests */
+
+.network-ctas {
+    align-items: center;
+    border: 1px solid;
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    display: inline-flex;
+    gap: 10px;
+    height: 34px;
+    justify-content: center;
+    padding: 8px 12px;
+    position: relative;
+}
+
+.network-ctas .text-wrapper {
+    color: var(--primitives-colors-black);
+    font-family: "Helvetica Neue-Regular", Helvetica;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: -2.00px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.network-ctas.dismiss {
+    background-color: var(--primitives-colors-white);
+    border-color: var(--primitives-colors-coral);
+}
+
+.network-ctas.connect {
+    background-color: var(--primitives-colors-mint);
+    border-color: var(--primitives-colors-dark-mint);
+}
+
+.network-ctas.hover.dismiss {
+    background-color: var(--primitives-colors-light-coral);
+}
+
+.network-ctas.hover.connect {
+    background-color: var(--primitives-colors-mint-2);
+}
+
+/* Following */
+
+.following {
+    align-items: center;
+    border: 1px solid;
+    border-color: var(--primitives-colors-dark-bluepurple);
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    gap: 10px;
+    height: 34px;
+    justify-content: center;
+    padding: 12px;
+    position: relative;
+}
+
+.following .follow {
+    font-family: var(--CTA-text-font-family);
+    font-size: var(--CTA-text-font-size);
+    font-style: var(--CTA-text-font-style);
+    font-weight: var(--CTA-text-font-weight);
+    letter-spacing: var(--CTA-text-letter-spacing);
+    line-height: var(--CTA-text-line-height);
+    margin-bottom: -2.00px;
+    margin-top: -4.00px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.following.state-follow {
+    background-color: var(--primitives-colors-frosty-blue);
+    color: var(--color-secondary-white);
+    display: inline-flex;
+}
+
+.following.state-following {
+    background-color: var(--primitives-colors-dark-bluepurple);
+    color: var(--primitives-colors-dark-bluepurple);
+    display: inline-flex;
+}
+
+
+/* File Upload */
+
+.file-upload {
+    align-items: center;
+    border: 1px solid;
+    border-radius: var(--primitives-numbers-schedule-class-border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    position: relative;
+    width: 254.81px;
+}
+
+
+.file-upload .text-wrapper {
+    color: var(--primitives-colors-black);
+    font-family: var(--small-CTA-text-font-family);
+    font-size: var(--small-CTA-text-font-size);
+    font-style: var(--small-CTA-text-font-style);
+    font-weight: var(--small-CTA-text-font-weight);
+    letter-spacing: var(--small-CTA-text-letter-spacing);
+    line-height: var(--small-CTA-text-line-height);
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.file-upload.default {
+    background-color: var(--primitives-colors-white);
+    border-color: var(--primitives-colors-gray-2)
+}
+
+.file-upload.hover {
+    background-color: var(--primitives-colors-frosty-blue);
+    border-color: var(--primitives-colors-blue-utility);
+}
+
+
+.file-upload .icon {
+    height: 22px;
+    width: 22px;
+}
+
+
+/* Search Bar */
+
+.search-bar {
+    align-items: flex-start;
+    background-color: #efefef;
+    border: 0.7px solid;
+    border-color: #0000004c;
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 45px;
+    justify-content: center;
+    padding: 10px 30px 10px 16px;
+    position: relative;
+    width: 588px;
+}
+
+.search-bar .frame {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 12px;
+    position: relative;
+}
+
+.search-bar .search {
+    height: 18.58px;
+    position: relative;
+    width: 19px;
+}
+
+.search-bar .text-wrapper {
+    color: var(--primitives-colors-gray-2);
+    font-family: "Helvetica Neue-Regular", Helvetica;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: -1.00px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+
+/* Nav Link */
+
+
+.nav-link {
+    align-items: center;
+    display: inline-flex;
+    position: relative;
+}
+
+.nav-link .text-wrapper {
+    color: var(--primitives-colors-charcoal);
+    font-family: "Helvetica Neue-Regular", Helvetica;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 20px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.nav-link .current-page {
+    background-color: var(--primitives-colors-light-coral);
+    border: 1px solid;
+    border-color: var(--primitives-colors-coral);
+    border-radius: var(--primitives-numbers-pill-border-radius);
+    gap: 10px;
+    height: 34px;
+    justify-content: center;
+    padding: 8px 12px;
+}
+
+
+
